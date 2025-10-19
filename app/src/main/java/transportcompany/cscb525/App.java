@@ -191,8 +191,8 @@ public class App {
                                     selectedVehicle.setType(transportType);
                                 }
 
-                                int capacity = InputUtil.readInt(scanner, "Izberete capacity (int/no):");
-                                if (!licenseInput.equals("no")) {
+                                int capacity = InputUtil.readInt(scanner, "Izberete capacity (int/-1):");
+                                if (capacity != -1) {
                                     selectedVehicle.setCapacity(capacity);
                                 }
 
@@ -219,8 +219,76 @@ public class App {
                         break;
 
                     // employees
-                    case 4:
+                    case 4: {
+                        Menu companyEmployeeMenu = new Menu(currentCompany.getName() + " prevozni sredstva");
+                        companyEmployeeMenu.addOption(1, "Dobavqne");
+                        companyEmployeeMenu.addOption(2, "Redaktirane");
+                        companyEmployeeMenu.addOption(3, "Iztrivane");
+                        companyEmployeeMenu.addOption(0, "back");
+                        List<Employee> employeeList = EmployeeDao.getEmployeesForCompany(currentCompany);
+
+                        int employeeChoice = companyEmployeeMenu.listen(scanner, "");
+                        switch (employeeChoice) {
+                            // add employee
+                            case 1: {
+
+                                String name = InputUtil.readString(scanner, "Izberete ime:");
+
+                                String licenseInput = InputUtil.readString(scanner, "Izberete license (A/B/C):");
+                                License license = License.valueOf(licenseInput);
+
+                                long salary = InputUtil.readLong(scanner, "Izberete zaplata:");
+
+                                Employee employee = new Employee(name, license, currentCompany, salary);
+                                EmployeeDao.createEmployee(employee);
+
+                                break;
+                            }
+
+                            // edit employee
+                            case 2: {
+                                Employee selectedEmployee = EmployeeDao.selectEmployee(scanner, employeeList);
+                                if (selectedEmployee == null) {
+                                    break;
+                                }
+                                String name = InputUtil.readString(scanner, "Izberete ime (string/no):");
+                                if (!name.equals("no")) {
+                                    selectedEmployee.setName(name);
+                                }
+
+                                String licenseInput = InputUtil.readString(scanner, "Izberete license (A/B/C/no):");
+                                if (!licenseInput.equals("no")) {
+                                    License license = License.valueOf(licenseInput);
+                                    selectedEmployee.setLicense(license);
+                                }
+
+                                long salary = InputUtil.readLong(scanner, "Izberete zaplata (long/-1):");
+                                if (salary != -1) {
+                                    selectedEmployee.setSalary(salary);
+                                }
+
+                                EmployeeDao.updateEmployee(selectedEmployee);
+
+                                break;
+                            }
+
+                            // delete employee
+                            case 3:
+                                Employee employeeForDeletion = EmployeeDao.selectEmployee(scanner, employeeList);
+                                if (employeeForDeletion == null) {
+                                    break;
+                                }
+                                EmployeeDao.deleteEmployee(employeeForDeletion);
+                                break;
+
+                            case 0:
+                                break;
+                            default:
+                                System.out.println("Ne sushtestvuva.");
+                                break;
+                        }
                         break;
+                    }
 
                     case 0:
                         scanner.close();
