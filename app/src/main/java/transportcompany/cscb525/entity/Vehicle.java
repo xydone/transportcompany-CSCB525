@@ -28,9 +28,9 @@ public class Vehicle extends BaseEntity {
   @Column(nullable = false)
   private int capacity;
 
-    // hibernate no arg
-    protected Vehicle() {
-    }
+  // hibernate no arg
+  protected Vehicle() {
+  }
 
   public Vehicle(Company company, License license, TransportType transportType, int capacity) {
     this.company = company;

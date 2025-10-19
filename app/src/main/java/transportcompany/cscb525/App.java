@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import transportcompany.cscb525.configuration.SessionFactoryUtil;
 import transportcompany.cscb525.util.InputUtil;
+import transportcompany.cscb525.util.Menu;
 import transportcompany.cscb525.dao.*;
 import transportcompany.cscb525.entity.*;
 import transportcompany.cscb525.exceptions.CompanyNotFoundException;
@@ -17,64 +18,89 @@ public class App {
         Optional<Company> maybeCompany = Optional.empty();
         Scanner scanner = new Scanner(System.in);
         SessionFactoryUtil.getSessionFactory().openSession();
-
-        while (maybeCompany.isEmpty()) {
-            System.out.println("============= NQMA IZBRANA KOMPANIQ =============");
-            System.out.println("1. Dobavqne na kompaniq");
-            System.out.println("2. Izbirane na kompaniq");
-            System.out.println("0. exit");
-
-            int choice = InputUtil.readInt(scanner, "");
-
-            switch (choice) {
-                // add company
-                case 1:
-                    String name = InputUtil.readString(scanner, "Izberete imeto na kompaniqta");
-                    Company createdCompany = new Company(name);
-                    CompanyDao.createCompany(createdCompany);
-                    maybeCompany = Optional.of(createdCompany);
-                    break;
-                // choose company
-                case 2:
-                    long shop_id = InputUtil.readLong(scanner, "Izberete kompaniq (ID-to na kompaniqta):");
-                    try {
-                        Company foundCompany = CompanyDao.getCompanyById(shop_id);
-                        maybeCompany = Optional.of(foundCompany);
-                    } catch (CompanyNotFoundException e) {
-                        System.out.println(e.getMessage());
-                    }
-                    break;
-                case 0:
-                    scanner.close();
-                    return;
-                default:
-                    System.out.println("Ne sushtestvuva.");
-                    break;
-
-            }
-
-        }
-        // if here, company is selected, optional is safe
-        Company currentCompany = maybeCompany.get();
         while (true) {
-            System.out.println("============= " + currentCompany.getName() + " =============");
-            System.out.println("1. Edit");
-            System.out.println("0. exit");
+            if (maybeCompany.isEmpty()) {
+                Menu initalMenu = new Menu("NQMA IZBRANA KOMPANIQ");
+                initalMenu.addOption(1, "Dobavqne na kompaniq");
+                initalMenu.addOption(2, "Izbirane na kompaniq");
+                initalMenu.addOption(0, "exit");
 
-            int choice = InputUtil.readInt(scanner, "");
-            switch (choice) {
-                // edit
-                case 1:
-                    break;
-                case 0:
-                    scanner.close();
-                    return;
-                default:
-                    System.out.println("Ne sushtestvuva.");
-                    break;
+                int choice = initalMenu.listen(scanner, "");
 
+                switch (choice) {
+                    // add company
+                    case 1:
+                        String name = InputUtil.readString(scanner, "Izberete imeto na kompaniqta");
+                        Company createdCompany = new Company(name);
+                        CompanyDao.createCompany(createdCompany);
+                        maybeCompany = Optional.of(createdCompany);
+                        break;
+                    // choose company
+                    case 2:
+                        long shop_id = InputUtil.readLong(scanner, "Izberete kompaniq (ID-to na kompaniqta): ");
+                        try {
+                            Company foundCompany = CompanyDao.getCompanyById(shop_id);
+                            maybeCompany = Optional.of(foundCompany);
+                        } catch (CompanyNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        }
+                        break;
+                    case 0:
+                        scanner.close();
+                        return;
+                    default:
+                        System.out.println("Ne sushtestvuva.");
+                        break;
+
+                }
+
+            } else {
+                // if here, company is selected, optional is safe
+                Company currentCompany = maybeCompany.get();
+
+                Menu companyMenu = new Menu(currentCompany.getName());
+                companyMenu.addOption(1, "Nastroiki");
+                companyMenu.addOption(0, "exit");
+
+                int choice = companyMenu.listen(scanner, "");
+
+                switch (choice) {
+                    // settings
+                    case 1:
+                        Menu companySettingsMenu = new Menu(currentCompany.getName());
+                        companySettingsMenu.addOption(1, "Smqna na ime");
+                        companySettingsMenu.addOption(2, "Iztrivane");
+                        companySettingsMenu.addOption(0, "back");
+
+                        int menuChoice = companySettingsMenu.listen(scanner, "");
+                        switch (menuChoice) {
+                            case 1:
+                                String new_name = InputUtil.readString(scanner, "Novo ime: ");
+                                currentCompany.setName(new_name);
+                                CompanyDao.updateCompany(currentCompany);
+                                break;
+                            case 2:
+                                CompanyDao.deleteCompany(currentCompany);
+                                maybeCompany = Optional.empty();
+                                break;
+                            case 0:
+                                break;
+                            default:
+                                System.out.println("Ne sushtestvuva.");
+                                break;
+                        }
+                        break;
+                    case 0:
+                        scanner.close();
+                        return;
+                    default:
+                        System.out.println("Ne sushtestvuva.");
+                        break;
+
+                }
             }
         }
+
     }
 
 }

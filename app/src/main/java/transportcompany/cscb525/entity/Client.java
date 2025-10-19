@@ -20,9 +20,9 @@ public class Client extends BaseEntity {
   @JoinColumn(name = "company_id")
   private Company company;
 
-    // hibernate no arg
-    protected Client() {
-    }
+  // hibernate no arg
+  protected Client() {
+  }
 
   public Client(String name, Company company) {
     this.name = name;

@@ -46,9 +46,9 @@ public class Transport {
   @OneToMany
   private List<Client> clients;
 
-    // hibernate no arg
-    protected Transport() {
-    }
+  // hibernate no arg
+  protected Transport() {
+  }
 
   public Transport(String departure, String arrival, long price, TransportType transport, int size, Company company,
       Employee employee, boolean status, List<Client> clients) {
