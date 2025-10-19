@@ -10,14 +10,6 @@ import transportcompany.cscb525.entity.Company;
 import transportcompany.cscb525.exceptions.CompanyNotFoundException;
 
 public class CompanyDao {
-  public static void save(@Valid Company company) {
-    try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-      Transaction transaction = session.beginTransaction();
-
-      session.persist(company);
-      transaction.commit();
-    }
-  }
 
   public static void createCompany(@Valid Company company) {
     try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {

@@ -3,6 +3,8 @@
  */
 package transportcompany.cscb525;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -14,7 +16,7 @@ import transportcompany.cscb525.entity.*;
 import transportcompany.cscb525.exceptions.CompanyNotFoundException;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Optional<Company> maybeCompany = Optional.empty();
         Scanner scanner = new Scanner(System.in);
         SessionFactoryUtil.getSessionFactory().openSession();
@@ -60,6 +62,9 @@ public class App {
 
                 Menu companyMenu = new Menu(currentCompany.getName());
                 companyMenu.addOption(1, "Nastroiki");
+                companyMenu.addOption(2, "Klienti");
+                companyMenu.addOption(3, "Prevozni sredstva");
+                companyMenu.addOption(4, "Slujiteli");
                 companyMenu.addOption(0, "exit");
 
                 int choice = companyMenu.listen(scanner, "");
@@ -67,7 +72,7 @@ public class App {
                 switch (choice) {
                     // settings
                     case 1:
-                        Menu companySettingsMenu = new Menu(currentCompany.getName());
+                        Menu companySettingsMenu = new Menu(currentCompany.getName() + " nastroiki");
                         companySettingsMenu.addOption(1, "Smqna na ime");
                         companySettingsMenu.addOption(2, "Iztrivane");
                         companySettingsMenu.addOption(0, "back");
@@ -90,6 +95,61 @@ public class App {
                                 break;
                         }
                         break;
+
+                    // clients
+                    case 2:
+                        Menu companyClientsMenu = new Menu(currentCompany.getName() + " klienti");
+                        companyClientsMenu.addOption(1, "Dobavqne");
+                        companyClientsMenu.addOption(2, "Redaktirane");
+                        companyClientsMenu.addOption(3, "Iztrivane");
+                        companyClientsMenu.addOption(0, "back");
+                        List<Client> clientList = ClientDao.getClientsForCompany(currentCompany);
+
+                        int clientsChoice = companyClientsMenu.listen(scanner, "");
+                        switch (clientsChoice) {
+                            // add client
+                            case 1:
+                                String name = InputUtil.readString(scanner, "Imeto na klientut: ");
+                                Client client = new Client(name, currentCompany);
+                                ClientDao.createClient(client);
+                                break;
+
+                            // edit client
+                            case 2:
+                                Client selectedClient = ClientDao.selectClient(scanner, clientList);
+                                if (selectedClient == null) {
+                                    break;
+                                }
+                                String newName = InputUtil.readString(scanner, "Napishete novoto ime na klientut: ");
+                                selectedClient.setName(newName);
+                                ClientDao.updateClient(selectedClient);
+                                break;
+
+                            // delete client
+                            case 3:
+                                Client clientForDeletion = ClientDao.selectClient(scanner, clientList);
+                                if (clientForDeletion == null) {
+                                    break;
+                                }
+                                ClientDao.deleteClient(clientForDeletion);
+                                break;
+
+                            case 0:
+                                break;
+                            default:
+                                System.out.println("Ne sushtestvuva.");
+                                break;
+                        }
+                        break;
+
+                    // vehicles
+                    case 3:
+                        break;
+
+                    // employees
+                    case 4:
+                        break;
+
                     case 0:
                         scanner.close();
                         return;
