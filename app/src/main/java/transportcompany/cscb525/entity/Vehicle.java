@@ -22,11 +22,35 @@ public class Vehicle extends BaseEntity {
   @Column(nullable = false)
   private License license;
 
+  public void setLicense(License license) {
+    this.license = license;
+  }
+
+  public License getLicense() {
+    return license;
+  }
+
   @Column(nullable = false)
   private TransportType type;
 
+  public TransportType getType() {
+    return type;
+  }
+
+  public void setType(TransportType type) {
+    this.type = type;
+  }
+
   @Column(nullable = false)
   private int capacity;
+
+  public int getCapacity() {
+    return capacity;
+  }
+
+  public void setCapacity(int capacity) {
+    this.capacity = capacity;
+  }
 
   // hibernate no arg
   protected Vehicle() {

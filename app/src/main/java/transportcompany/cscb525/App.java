@@ -14,6 +14,8 @@ import transportcompany.cscb525.util.Menu;
 import transportcompany.cscb525.dao.*;
 import transportcompany.cscb525.entity.*;
 import transportcompany.cscb525.exceptions.CompanyNotFoundException;
+import transportcompany.cscb525.types.License;
+import transportcompany.cscb525.types.TransportType;
 
 public class App {
     public static void main(String[] args) throws IOException {
@@ -144,6 +146,76 @@ public class App {
 
                     // vehicles
                     case 3:
+                        Menu companyVehiclesMenu = new Menu(currentCompany.getName() + " prevozni sredstva");
+                        companyVehiclesMenu.addOption(1, "Dobavqne");
+                        companyVehiclesMenu.addOption(2, "Redaktirane");
+                        companyVehiclesMenu.addOption(3, "Iztrivane");
+                        companyVehiclesMenu.addOption(0, "back");
+                        List<Vehicle> vehicleList = VehicleDao.getVehiclesForCompany(currentCompany);
+
+                        int vehicleChoice = companyVehiclesMenu.listen(scanner, "");
+                        switch (vehicleChoice) {
+                            // add vehicle
+                            case 1: {
+
+                                String licenseInput = InputUtil.readString(scanner, "Izberete license (A/B/C):");
+                                License license = License.valueOf(licenseInput);
+
+                                String typeInput = InputUtil.readString(scanner,
+                                        "Izberete transport type (CARGO/PASSENGER):");
+                                TransportType transportType = TransportType.valueOf(typeInput);
+
+                                int capacity = InputUtil.readInt(scanner, "Izberete capacity:");
+
+                                Vehicle vehicle = new Vehicle(currentCompany, license, transportType, capacity);
+                                VehicleDao.createVehicle(vehicle);
+                                break;
+                            }
+
+                            // edit client
+                            case 2: {
+                                Vehicle selectedVehicle = VehicleDao.selectVehicle(scanner, vehicleList);
+                                if (selectedVehicle == null) {
+                                    break;
+                                }
+                                String licenseInput = InputUtil.readString(scanner, "Izberete license (A/B/C/no):");
+                                if (!licenseInput.equals("no")) {
+                                    License license = License.valueOf(licenseInput);
+                                    selectedVehicle.setLicense(license);
+                                }
+
+                                String typeInput = InputUtil.readString(scanner,
+                                        "Izberete transport type (CARGO/PASSENGER/no):");
+                                if (!licenseInput.equals("no")) {
+                                    TransportType transportType = TransportType.valueOf(typeInput);
+                                    selectedVehicle.setType(transportType);
+                                }
+
+                                int capacity = InputUtil.readInt(scanner, "Izberete capacity (int/no):");
+                                if (!licenseInput.equals("no")) {
+                                    selectedVehicle.setCapacity(capacity);
+                                }
+
+                                VehicleDao.updateVehicle(selectedVehicle);
+
+                                break;
+                            }
+
+                            // delete client
+                            case 3:
+                                Vehicle vehicleForDeletion = VehicleDao.selectVehicle(scanner, vehicleList);
+                                if (vehicleForDeletion == null) {
+                                    break;
+                                }
+                                VehicleDao.deleteVehicle(vehicleForDeletion);
+                                break;
+
+                            case 0:
+                                break;
+                            default:
+                                System.out.println("Ne sushtestvuva.");
+                                break;
+                        }
                         break;
 
                     // employees
