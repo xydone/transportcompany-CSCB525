@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16.1
+    container_name: transportcompany
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: transportcompany
+      LANG: "en_US.utf8"
+    ports:
+      - "5532:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # - ./docker-scripts/postgres:/docker-entrypoint-initdb.d
+      - ./docker-scripts/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command:
+      - "postgres"
+      - "-c"
+      - "listen_addresses=0.0.0.0"
+
+volumes:
+  pgdata:
