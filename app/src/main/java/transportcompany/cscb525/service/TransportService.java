@@ -1,6 +1,8 @@
 package transportcompany.cscb525.service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Scanner;
 
 import transportcompany.cscb525.entity.Client;
 import transportcompany.cscb525.entity.Company;
@@ -11,6 +13,7 @@ import transportcompany.cscb525.exceptions.InsufficientVehicleCapacityException;
 import transportcompany.cscb525.exceptions.InvalidEmployeeLicenseException;
 import transportcompany.cscb525.exceptions.InvalidVehicleTypeException;
 import transportcompany.cscb525.types.TransportType;
+import transportcompany.cscb525.util.InputUtil;
 
 public class TransportService {
   public static Transport createTransport(LocalDate departure, LocalDate arrival,
@@ -36,5 +39,26 @@ public class TransportService {
     t.setVehicle(vehicle);
 
     return t;
+  }
+
+  public static Transport selectTransport(Scanner scanner, List<Transport> transportList) {
+    if (transportList.isEmpty()) {
+      System.out.println("Kompaniqta nqma prevozi.");
+      return null;
+    }
+
+    System.out.println("List na prevozi:");
+    for (int i = 1; i <= transportList.size(); i++) {
+      Transport t = transportList.get(i - 1);
+      System.out.println("#" + i + ": " + t.getStartPoint() + " -> " + t.getEndPoint() + ", platen: " + t.getStatus());
+    }
+    System.out.println("Natisnete 0 za da izlezete");
+
+    int transportNum = InputUtil.readInt(scanner, "Napishete nomerut na slujitelqt: ");
+    if (transportNum == 0 || transportNum > transportList.size()) {
+      return null;
+    }
+
+    return transportList.get(transportNum - 1);
   }
 }

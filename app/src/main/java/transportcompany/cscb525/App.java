@@ -19,7 +19,10 @@ import transportcompany.cscb525.exceptions.CompanyNotFoundException;
 import transportcompany.cscb525.exceptions.InsufficientVehicleCapacityException;
 import transportcompany.cscb525.exceptions.InvalidEmployeeLicenseException;
 import transportcompany.cscb525.exceptions.InvalidVehicleTypeException;
+import transportcompany.cscb525.service.ClientService;
+import transportcompany.cscb525.service.EmployeeService;
 import transportcompany.cscb525.service.TransportService;
+import transportcompany.cscb525.service.VehicleService;
 import transportcompany.cscb525.types.License;
 import transportcompany.cscb525.types.TransportType;
 
@@ -125,7 +128,7 @@ public class App {
 
                             // edit client
                             case 2:
-                                Optional<Client> maybeClient = ClientDao.selectClient(scanner, clientList);
+                                Optional<Client> maybeClient = ClientService.selectClient(scanner, clientList);
                                 if (!maybeClient.isPresent()) {
                                     break;
                                 }
@@ -137,7 +140,8 @@ public class App {
 
                             // delete client
                             case 3:
-                                Optional<Client> maybeClientForDeletion = ClientDao.selectClient(scanner, clientList);
+                                Optional<Client> maybeClientForDeletion = ClientService.selectClient(scanner,
+                                        clientList);
                                 if (!maybeClientForDeletion.isPresent()) {
                                     break;
                                 }
@@ -180,7 +184,7 @@ public class App {
 
                             // edit vehicle
                             case 2: {
-                                Vehicle selectedVehicle = VehicleDao.selectVehicle(scanner, vehicleList);
+                                Vehicle selectedVehicle = VehicleService.selectVehicle(scanner, vehicleList);
                                 if (selectedVehicle == null) {
                                     break;
                                 }
@@ -204,7 +208,7 @@ public class App {
 
                             // delete vehicle
                             case 3:
-                                Vehicle vehicleForDeletion = VehicleDao.selectVehicle(scanner, vehicleList);
+                                Vehicle vehicleForDeletion = VehicleService.selectVehicle(scanner, vehicleList);
                                 if (vehicleForDeletion == null) {
                                     break;
                                 }
@@ -249,7 +253,7 @@ public class App {
 
                             // edit employee
                             case 2: {
-                                Employee selectedEmployee = EmployeeDao.selectEmployee(scanner, employeeList);
+                                Employee selectedEmployee = EmployeeService.selectEmployee(scanner, employeeList);
                                 if (selectedEmployee == null) {
                                     break;
                                 }
@@ -277,7 +281,7 @@ public class App {
 
                             // delete employee
                             case 3:
-                                Employee employeeForDeletion = EmployeeDao.selectEmployee(scanner, employeeList);
+                                Employee employeeForDeletion = EmployeeService.selectEmployee(scanner, employeeList);
                                 if (employeeForDeletion == null) {
                                     break;
                                 }
@@ -337,17 +341,17 @@ public class App {
                                 }
 
                                 List<Vehicle> availableVehicles = VehicleDao.getVehiclesForCompany(currentCompany);
-                                Vehicle chosenVehicle = VehicleDao.selectVehicle(scanner, availableVehicles);
+                                Vehicle chosenVehicle = VehicleService.selectVehicle(scanner, availableVehicles);
 
                                 int size = InputUtil.readInt(scanner, sizeString);
 
                                 List<Employee> employeeList = EmployeeDao.getEmployeesForCompany(currentCompany);
-                                Employee employee = EmployeeDao.selectEmployee(scanner, employeeList);
+                                Employee employee = EmployeeService.selectEmployee(scanner, employeeList);
 
                                 boolean status = InputUtil.readBoolean(scanner, "Dostavkata zaplatena li e? (yes/no)");
 
                                 List<Client> allClients = ClientDao.getClientsForCompany(currentCompany);
-                                Optional<Client> maybeClient = ClientDao.selectClient(scanner, allClients);
+                                Optional<Client> maybeClient = ClientService.selectClient(scanner, allClients);
                                 if (!maybeClient.isPresent()) {
                                     break;
                                 }
@@ -370,7 +374,7 @@ public class App {
                             // status change
                             case 2:
                                 System.out.println("Izberete transporta, chiito status da bude flipnat:");
-                                Transport selectedTransport = TransportDao.selectTransport(scanner, transportList);
+                                Transport selectedTransport = TransportService.selectTransport(scanner, transportList);
                                 selectedTransport.flipStatus();
 
                                 TransportDao.updateTransport(selectedTransport);
