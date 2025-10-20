@@ -19,23 +19,47 @@ public class Transport {
   @Column(nullable = false)
   private LocalDate departure;
 
+  public LocalDate getDeparture() {
+    return departure;
+  }
+
   @Column(nullable = false)
   private LocalDate arrival;
+
+  public LocalDate getArrival() {
+    return arrival;
+  }
 
   @Column(name = "start_point", nullable = false)
   @NotBlank(message = "Nachalnata tochka e zaduljitelna.")
   private String startPoint;
 
+  public String getStartPoint() {
+    return startPoint;
+  }
+
   @Column(name = "end_point", nullable = false)
   @NotBlank(message = "Destinaciqta e zaduljitelna.")
   private String endPoint;
+
+  public String getEndPoint() {
+    return endPoint;
+  }
 
   @Column(nullable = false)
   @PositiveOrZero(message = "Cenata trqbva da bude polojitelno chislo ili nula")
   private long price;
 
+  public long getPrice() {
+    return price;
+  }
+
   @Column(nullable = false)
   private TransportType transport;
+
+  public TransportType getTransportType() {
+    return transport;
+  }
 
   // in the case that this is a cargo transport, this represents the weight of the
   // cargo
@@ -44,24 +68,48 @@ public class Transport {
   @Column(nullable = false)
   private int size;
 
+  public int getSize() {
+    return size;
+  }
+
   @ManyToOne()
   @OnDelete(action = OnDeleteAction.CASCADE)
   @JoinColumn(name = "company_id")
   private Company company;
+
+  public Company getCompany() {
+    return company;
+  }
 
   @ManyToOne()
   @OnDelete(action = OnDeleteAction.CASCADE)
   @JoinColumn(name = "employee_id")
   private Employee employee;
 
+  public Employee getEmployee() {
+    return employee;
+  }
+
   // true - paid
   // false - not paid
   @Column(nullable = false)
   private boolean status;
 
+  public boolean getStatus() {
+    return status;
+  }
+
+  public void flipStatus() {
+    this.status = !this.status;
+  }
+
   @ManyToOne
   @JoinColumn(name = "vehicle_id")
   private Vehicle vehicle;
+
+  public Vehicle getvehicle() {
+    return vehicle;
+  }
 
   public void setVehicle(Vehicle vehicle) {
     this.vehicle = vehicle;
@@ -70,6 +118,10 @@ public class Transport {
   @ManyToOne
   @JoinColumn(name = "client_id")
   private Client client;
+
+  public Client getclient() {
+    return client;
+  }
 
   // hibernate no arg
   protected Transport() {

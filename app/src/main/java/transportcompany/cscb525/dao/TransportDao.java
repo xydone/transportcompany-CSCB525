@@ -1,6 +1,7 @@
 package transportcompany.cscb525.dao;
 
 import java.util.List;
+import java.util.Scanner;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -10,6 +11,7 @@ import transportcompany.cscb525.configuration.SessionFactoryUtil;
 import transportcompany.cscb525.entity.Company;
 import transportcompany.cscb525.entity.Transport;
 import transportcompany.cscb525.exceptions.TransportNotFoundException;
+import transportcompany.cscb525.util.InputUtil;
 
 public class TransportDao {
   public static void createTransport(@Valid Transport transport) {
@@ -75,6 +77,27 @@ public class TransportDao {
       transaction.commit();
     }
     return transports;
+  }
+
+  public static Transport selectTransport(Scanner scanner, List<Transport> transportList) {
+    if (transportList.isEmpty()) {
+      System.out.println("Kompaniqta nqma prevozi.");
+      return null;
+    }
+
+    System.out.println("List na prevozi:");
+    for (int i = 1; i <= transportList.size(); i++) {
+      Transport t = transportList.get(i - 1);
+      System.out.println("#" + i + ": " + t.getStartPoint() + " -> " + t.getEndPoint() + ", platen: " + t.getStatus());
+    }
+    System.out.println("Natisnete 0 za da izlezete");
+
+    int transportNum = InputUtil.readInt(scanner, "Napishete nomerut na slujitelqt: ");
+    if (transportNum == 0 || transportNum > transportList.size()) {
+      return null;
+    }
+
+    return transportList.get(transportNum - 1);
   }
 
 }

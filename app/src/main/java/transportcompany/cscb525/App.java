@@ -297,10 +297,14 @@ public class App {
                     case 5: {
                         Menu companyTransportMenu = new Menu(currentCompany.getName() + " prevozi");
                         companyTransportMenu.addOption(1, "Dobavqne");
+                        companyTransportMenu.addOption(2, "Promqna na status");
                         companyTransportMenu.addOption(0, "back");
+
+                        List<Transport> transportList = TransportDao.getTransportsForCompany(currentCompany);
 
                         int transportChoice = companyTransportMenu.listen(scanner, "");
                         switch (transportChoice) {
+                            // add transport
                             case 1:
                                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
@@ -363,7 +367,14 @@ public class App {
                                     System.out.println(e.getMessage());
                                 }
                                 break;
+                            // status change
+                            case 2:
+                                System.out.println("Izberete transporta, chiito status da bude flipnat:");
+                                Transport selectedTransport = TransportDao.selectTransport(scanner, transportList);
+                                selectedTransport.flipStatus();
 
+                                TransportDao.updateTransport(selectedTransport);
+                                break;
                             case 0:
                                 break;
                             default:
