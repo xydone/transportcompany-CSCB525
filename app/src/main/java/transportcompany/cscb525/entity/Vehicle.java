@@ -1,7 +1,6 @@
 package transportcompany.cscb525.entity;
 
 import jakarta.persistence.*;
-import transportcompany.cscb525.types.License;
 import transportcompany.cscb525.types.TransportType;
 
 import org.hibernate.annotations.OnDelete;
@@ -18,17 +17,6 @@ public class Vehicle extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-
-  @Column(nullable = false)
-  private License license;
-
-  public void setLicense(License license) {
-    this.license = license;
-  }
-
-  public License getLicense() {
-    return license;
-  }
 
   @Column(nullable = false)
   private TransportType type;
@@ -56,9 +44,9 @@ public class Vehicle extends BaseEntity {
   protected Vehicle() {
   }
 
-  public Vehicle(Company company, License license, TransportType transportType, int capacity) {
+  public Vehicle(Company company, TransportType transportType, int capacity) {
+
     this.company = company;
-    this.license = license;
     this.type = transportType;
     this.capacity = capacity;
   }

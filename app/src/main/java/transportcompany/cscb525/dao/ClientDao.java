@@ -3,6 +3,7 @@ package transportcompany.cscb525.dao;
 import jakarta.validation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 import org.hibernate.*;
@@ -79,10 +80,10 @@ public class ClientDao {
     return clients;
   }
 
-  public static Client selectClient(Scanner scanner, List<Client> clientList) {
+  public static Optional<Client> selectClient(Scanner scanner, List<Client> clientList) {
     if (clientList.isEmpty()) {
       System.out.println("Kompaniqta nqma clienti.");
-      return null;
+      return Optional.empty();
     }
 
     System.out.println("List na klienti:");
@@ -94,10 +95,10 @@ public class ClientDao {
 
     int clientNum = InputUtil.readInt(scanner, "Napishete nomerut na klientut: ");
     if (clientNum == 0 || clientNum > clientList.size()) {
-      return null;
+      return Optional.empty();
     }
 
-    return clientList.get(clientNum - 1);
+    return Optional.of(clientList.get(clientNum - 1));
   }
 
 }

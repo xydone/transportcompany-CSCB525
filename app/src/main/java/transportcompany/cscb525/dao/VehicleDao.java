@@ -89,7 +89,7 @@ public class VehicleDao {
     for (int i = 1; i <= vehicleList.size(); i++) {
       Vehicle v = vehicleList.get(i - 1);
       System.out.println(
-          "#" + i + ": Licence: " + v.getLicense() + " ; Type: " + v.getType() + " ; Capacity: " + v.getCapacity());
+          "#" + i + "; Type: " + v.getType() + " ; Capacity: " + v.getCapacity());
     }
     System.out.println("Natisnete 0 za da izlezete");
 

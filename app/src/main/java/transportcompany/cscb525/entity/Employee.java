@@ -2,6 +2,7 @@ package transportcompany.cscb525.entity;
 
 import jakarta.persistence.*;
 import transportcompany.cscb525.types.License;
+import transportcompany.cscb525.types.TransportType;
 
 @Entity
 @Table(name = "employees")
@@ -30,6 +31,21 @@ public class Employee extends BaseEntity {
 
     public License getLicense() {
         return license;
+    }
+
+    public boolean hasLicenseFor(TransportType transportType) {
+        switch (this.license) {
+            case A:
+                return transportType == TransportType.CAR;
+            case B:
+                return transportType == TransportType.BUS;
+            case C:
+                return transportType == TransportType.TRUCK;
+            // not reachable but the java compiler is stupid for some reason
+            default:
+                return false;
+
+        }
     }
 
     @ManyToOne()

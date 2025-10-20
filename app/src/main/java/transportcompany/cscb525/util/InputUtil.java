@@ -53,4 +53,23 @@ public class InputUtil {
       }
     }
   }
+
+  public static boolean readBoolean(Scanner scanner, String prompt) {
+    while (true) {
+      if (prompt != null && !prompt.isBlank()) {
+        System.out.print(prompt + '\n');
+      }
+
+      String input = scanner.nextLine().trim().toLowerCase();
+
+      if (input.equals("yes") || input.equals("y")) {
+        return true;
+      } else if (input.equals("no") || input.equals("n")) {
+        return false;
+      } else {
+        System.out.println("Trqbva da bude boolean.");
+      }
+    }
+  }
+
 }
