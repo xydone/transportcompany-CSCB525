@@ -17,7 +17,7 @@ public class Menu {
   }
 
   public void print() {
-    System.out.println("============= " + title + " =============");
+    System.out.println("\n============= " + title + " =============");
     for (Map.Entry<Integer, String> entry : options.entrySet()) {
       System.out.println(entry.getKey() + ". " + entry.getValue());
     }

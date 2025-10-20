@@ -186,7 +186,7 @@ public class App {
                                 }
 
                                 String typeInput = InputUtil.readString(scanner,
-                                        "Izberete transport type (CARGO/PASSENGER/no):");
+                                        "Izberete transport type (CAR/BUS/TRUCK/no):");
                                 if (!typeInput.equals("no")) {
                                     TransportType transportType = TransportType.valueOf(typeInput);
                                     selectedVehicle.setType(transportType);
