@@ -1,7 +1,6 @@
 package transportcompany.cscb525.dao;
 
 import java.util.List;
-import java.util.Scanner;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,7 +10,6 @@ import transportcompany.cscb525.configuration.SessionFactoryUtil;
 import transportcompany.cscb525.entity.Company;
 import transportcompany.cscb525.entity.Transport;
 import transportcompany.cscb525.exceptions.TransportNotFoundException;
-import transportcompany.cscb525.util.InputUtil;
 
 public class TransportDao {
   public static void createTransport(@Valid Transport transport) {

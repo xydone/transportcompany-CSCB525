@@ -3,15 +3,12 @@ package transportcompany.cscb525.dao;
 import jakarta.validation.*;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
 
 import org.hibernate.*;
 import transportcompany.cscb525.configuration.SessionFactoryUtil;
 import transportcompany.cscb525.entity.Client;
 import transportcompany.cscb525.entity.Company;
 import transportcompany.cscb525.exceptions.ClientNotFoundException;
-import transportcompany.cscb525.util.InputUtil;
 
 public class ClientDao {
 

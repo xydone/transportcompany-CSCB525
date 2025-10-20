@@ -1,7 +1,6 @@
 package transportcompany.cscb525.dao;
 
 import java.util.List;
-import java.util.Scanner;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,7 +10,6 @@ import transportcompany.cscb525.configuration.SessionFactoryUtil;
 import transportcompany.cscb525.entity.Company;
 import transportcompany.cscb525.entity.Vehicle;
 import transportcompany.cscb525.exceptions.VehicleNotFoundException;
-import transportcompany.cscb525.util.InputUtil;
 
 public class VehicleDao {
   public static void createVehicle(@Valid Vehicle vehicle) {

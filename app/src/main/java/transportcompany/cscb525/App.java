@@ -77,6 +77,7 @@ public class App {
                 companyMenu.addOption(3, "Prevozni sredstva");
                 companyMenu.addOption(4, "Slujiteli");
                 companyMenu.addOption(5, "Prevozi");
+                companyMenu.addOption(9, "Statistiki");
                 companyMenu.addOption(0, "exit");
 
                 int choice = companyMenu.listen(scanner, "");
@@ -84,307 +85,28 @@ public class App {
                 switch (choice) {
                     // settings
                     case 1:
-                        Menu companySettingsMenu = new Menu(currentCompany.getName() + " nastroiki");
-                        companySettingsMenu.addOption(1, "Smqna na ime");
-                        companySettingsMenu.addOption(2, "Iztrivane");
-                        companySettingsMenu.addOption(0, "back");
-
-                        int menuChoice = companySettingsMenu.listen(scanner, "");
-                        switch (menuChoice) {
-                            case 1:
-                                String new_name = InputUtil.readString(scanner, "Novo ime: ");
-                                currentCompany.setName(new_name);
-                                CompanyDao.updateCompany(currentCompany);
-                                break;
-                            case 2:
-                                CompanyDao.deleteCompany(currentCompany);
-                                maybeCompany = Optional.empty();
-                                break;
-                            case 0:
-                                break;
-                            default:
-                                System.out.println("Ne sushtestvuva.");
-                                break;
-                        }
+                        settingsMenu(maybeCompany, scanner, currentCompany);
                         break;
 
                     // clients
                     case 2:
-                        Menu companyClientsMenu = new Menu(currentCompany.getName() + " klienti");
-                        companyClientsMenu.addOption(1, "Dobavqne");
-                        companyClientsMenu.addOption(2, "Redaktirane");
-                        companyClientsMenu.addOption(3, "Iztrivane");
-                        companyClientsMenu.addOption(0, "back");
-                        List<Client> clientList = ClientDao.getClientsForCompany(currentCompany);
-
-                        int clientsChoice = companyClientsMenu.listen(scanner, "");
-                        switch (clientsChoice) {
-                            // add client
-                            case 1:
-                                String name = InputUtil.readString(scanner, "Imeto na klientut: ");
-                                Client client = new Client(name, currentCompany);
-                                ClientDao.createClient(client);
-                                break;
-
-                            // edit client
-                            case 2:
-                                Optional<Client> maybeClient = ClientService.selectClient(scanner, clientList);
-                                if (!maybeClient.isPresent()) {
-                                    break;
-                                }
-                                Client selectedClient = maybeClient.get();
-                                String newName = InputUtil.readString(scanner, "Napishete novoto ime na klientut: ");
-                                selectedClient.setName(newName);
-                                ClientDao.updateClient(selectedClient);
-                                break;
-
-                            // delete client
-                            case 3:
-                                Optional<Client> maybeClientForDeletion = ClientService.selectClient(scanner,
-                                        clientList);
-                                if (!maybeClientForDeletion.isPresent()) {
-                                    break;
-                                }
-                                Client clientForDeletion = maybeClientForDeletion.get();
-                                ClientDao.deleteClient(clientForDeletion);
-                                break;
-
-                            case 0:
-                                break;
-                            default:
-                                System.out.println("Ne sushtestvuva.");
-                                break;
-                        }
+                        clientsMenu(scanner, currentCompany);
                         break;
 
                     // vehicles
                     case 3:
-                        Menu companyVehiclesMenu = new Menu(currentCompany.getName() + " prevozni sredstva");
-                        companyVehiclesMenu.addOption(1, "Dobavqne");
-                        companyVehiclesMenu.addOption(2, "Redaktirane");
-                        companyVehiclesMenu.addOption(3, "Iztrivane");
-                        companyVehiclesMenu.addOption(0, "back");
-                        List<Vehicle> vehicleList = VehicleDao.getVehiclesForCompany(currentCompany);
-
-                        int vehicleChoice = companyVehiclesMenu.listen(scanner, "");
-                        switch (vehicleChoice) {
-                            // add vehicle
-                            case 1: {
-
-                                String transportTypeInput = InputUtil.readString(scanner,
-                                        "Izberete tip na transport-a (CAR/BUS/TRUCK):");
-                                TransportType transportType = TransportType.valueOf(transportTypeInput);
-
-                                int capacity = InputUtil.readInt(scanner, "Vuvedete max capacity-to:");
-
-                                Vehicle vehicle = new Vehicle(currentCompany, transportType, capacity);
-                                VehicleDao.createVehicle(vehicle);
-                                break;
-                            }
-
-                            // edit vehicle
-                            case 2: {
-                                Vehicle selectedVehicle = VehicleService.selectVehicle(scanner, vehicleList);
-                                if (selectedVehicle == null) {
-                                    break;
-                                }
-
-                                String typeInput = InputUtil.readString(scanner,
-                                        "Izberete transport type (CAR/BUS/TRUCK/no):");
-                                if (!typeInput.equals("no")) {
-                                    TransportType transportType = TransportType.valueOf(typeInput);
-                                    selectedVehicle.setType(transportType);
-                                }
-
-                                int capacity = InputUtil.readInt(scanner, "Izberete capacity (int/-1):");
-                                if (capacity != -1) {
-                                    selectedVehicle.setCapacity(capacity);
-                                }
-
-                                VehicleDao.updateVehicle(selectedVehicle);
-
-                                break;
-                            }
-
-                            // delete vehicle
-                            case 3:
-                                Vehicle vehicleForDeletion = VehicleService.selectVehicle(scanner, vehicleList);
-                                if (vehicleForDeletion == null) {
-                                    break;
-                                }
-                                VehicleDao.deleteVehicle(vehicleForDeletion);
-                                break;
-
-                            case 0:
-                                break;
-                            default:
-                                System.out.println("Ne sushtestvuva.");
-                                break;
-                        }
+                        vehiclesMenu(scanner, currentCompany);
                         break;
 
                     // employees
                     case 4: {
-                        Menu companyEmployeeMenu = new Menu(currentCompany.getName() + " slujiteli");
-                        companyEmployeeMenu.addOption(1, "Dobavqne");
-                        companyEmployeeMenu.addOption(2, "Redaktirane");
-                        companyEmployeeMenu.addOption(3, "Iztrivane");
-                        companyEmployeeMenu.addOption(0, "back");
-                        List<Employee> employeeList = EmployeeDao.getEmployeesForCompany(currentCompany);
-
-                        int employeeChoice = companyEmployeeMenu.listen(scanner, "");
-                        switch (employeeChoice) {
-                            // add employee
-                            case 1: {
-
-                                String name = InputUtil.readString(scanner, "Izberete ime:");
-
-                                String licenseInput = InputUtil.readString(scanner,
-                                        "Izberete knijka (A/B/C):");
-                                License license = License.valueOf(licenseInput);
-
-                                long salary = InputUtil.readLong(scanner, "Izberete zaplata:");
-
-                                Employee employee = new Employee(name, license, currentCompany, salary);
-                                EmployeeDao.createEmployee(employee);
-
-                                break;
-                            }
-
-                            // edit employee
-                            case 2: {
-                                Employee selectedEmployee = EmployeeService.selectEmployee(scanner, employeeList);
-                                if (selectedEmployee == null) {
-                                    break;
-                                }
-                                String name = InputUtil.readString(scanner, "Izberete ime (string/no):");
-                                if (!name.equals("no")) {
-                                    selectedEmployee.setName(name);
-                                }
-
-                                String licenseInput = InputUtil.readString(scanner,
-                                        "Izberete knijka (A/B/C/no):");
-                                if (!licenseInput.equals("no")) {
-                                    License license = License.valueOf(licenseInput);
-                                    selectedEmployee.setLicense(license);
-                                }
-
-                                long salary = InputUtil.readLong(scanner, "Izberete zaplata (long/-1):");
-                                if (salary != -1) {
-                                    selectedEmployee.setSalary(salary);
-                                }
-
-                                EmployeeDao.updateEmployee(selectedEmployee);
-
-                                break;
-                            }
-
-                            // delete employee
-                            case 3:
-                                Employee employeeForDeletion = EmployeeService.selectEmployee(scanner, employeeList);
-                                if (employeeForDeletion == null) {
-                                    break;
-                                }
-                                EmployeeDao.deleteEmployee(employeeForDeletion);
-                                break;
-
-                            case 0:
-                                break;
-                            default:
-                                System.out.println("Ne sushtestvuva.");
-                                break;
-                        }
+                        employeesMenu(scanner, currentCompany);
                         break;
                     }
 
                     // transport
                     case 5: {
-                        Menu companyTransportMenu = new Menu(currentCompany.getName() + " prevozi");
-                        companyTransportMenu.addOption(1, "Dobavqne");
-                        companyTransportMenu.addOption(2, "Promqna na status");
-                        companyTransportMenu.addOption(0, "back");
-
-                        List<Transport> transportList = TransportDao.getTransportsForCompany(currentCompany);
-
-                        int transportChoice = companyTransportMenu.listen(scanner, "");
-                        switch (transportChoice) {
-                            // add transport
-                            case 1:
-                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
-                                String departureString = InputUtil.readString(scanner, "Izberete data na trugvane:");
-                                LocalDate departure = LocalDate.parse(departureString, formatter);
-
-                                String arrivalString = InputUtil.readString(scanner, "Izberete data na pristigane:");
-                                LocalDate arrival = LocalDate.parse(arrivalString, formatter);
-
-                                String departureLocation = InputUtil.readString(scanner,
-                                        "Izberete lokaciq na trugvane:");
-
-                                String arrivalLocation = InputUtil.readString(scanner,
-                                        "Izberete lokaciq na pristigane:");
-
-                                long price = InputUtil.readLong(scanner, "Izberete cena:");
-
-                                String typeInput = InputUtil.readString(scanner,
-                                        "Izberete tip na transport (CAR/BUS/TRUCK):");
-                                TransportType type = TransportType.valueOf(typeInput);
-
-                                String sizeString = "";
-                                switch (type) {
-                                    case CAR, BUS:
-                                        sizeString = "Izberete kolko na broi hora shte budat prevozvani: ";
-                                        break;
-                                    case TRUCK:
-                                        sizeString = "Izberete tejesta na tovara: ";
-                                        break;
-                                }
-
-                                List<Vehicle> availableVehicles = VehicleDao.getVehiclesForCompany(currentCompany);
-                                Vehicle chosenVehicle = VehicleService.selectVehicle(scanner, availableVehicles);
-
-                                int size = InputUtil.readInt(scanner, sizeString);
-
-                                List<Employee> employeeList = EmployeeDao.getEmployeesForCompany(currentCompany);
-                                Employee employee = EmployeeService.selectEmployee(scanner, employeeList);
-
-                                boolean status = InputUtil.readBoolean(scanner, "Dostavkata zaplatena li e? (yes/no)");
-
-                                List<Client> allClients = ClientDao.getClientsForCompany(currentCompany);
-                                Optional<Client> maybeClient = ClientService.selectClient(scanner, allClients);
-                                if (!maybeClient.isPresent()) {
-                                    break;
-                                }
-                                Client selectedClient = maybeClient.get();
-
-                                try {
-
-                                    Transport transport = TransportService.createTransport(departure, arrival,
-                                            departureLocation,
-                                            arrivalLocation, price, type, size,
-                                            currentCompany,
-                                            employee, chosenVehicle, status, selectedClient);
-                                    TransportDao.createTransport(transport);
-                                    System.out.println("Uspeshno suzdaden!");
-                                } catch (InvalidVehicleTypeException | InvalidEmployeeLicenseException
-                                        | InsufficientVehicleCapacityException e) {
-                                    System.out.println(e.getMessage());
-                                }
-                                break;
-                            // status change
-                            case 2:
-                                System.out.println("Izberete transporta, chiito status da bude flipnat:");
-                                Transport selectedTransport = TransportService.selectTransport(scanner, transportList);
-                                selectedTransport.flipStatus();
-
-                                TransportDao.updateTransport(selectedTransport);
-                                break;
-                            case 0:
-                                break;
-                            default:
-                                System.out.println("Ne sushtestvuva.");
-                                break;
-                        }
+                        transportMenu(scanner, currentCompany);
                         break;
                     }
 
@@ -399,6 +121,306 @@ public class App {
             }
         }
 
+    }
+
+    private static void transportMenu(Scanner scanner, Company currentCompany) {
+        Menu companyTransportMenu = new Menu(currentCompany.getName() + " prevozi");
+        companyTransportMenu.addOption(1, "Dobavqne");
+        companyTransportMenu.addOption(2, "Promqna na status");
+        companyTransportMenu.addOption(0, "back");
+
+        List<Transport> transportList = TransportDao.getTransportsForCompany(currentCompany);
+
+        int transportChoice = companyTransportMenu.listen(scanner, "");
+        switch (transportChoice) {
+            // add transport
+            case 1:
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+                String departureString = InputUtil.readString(scanner, "Izberete data na trugvane:");
+                LocalDate departure = LocalDate.parse(departureString, formatter);
+
+                String arrivalString = InputUtil.readString(scanner, "Izberete data na pristigane:");
+                LocalDate arrival = LocalDate.parse(arrivalString, formatter);
+
+                String departureLocation = InputUtil.readString(scanner,
+                        "Izberete lokaciq na trugvane:");
+
+                String arrivalLocation = InputUtil.readString(scanner,
+                        "Izberete lokaciq na pristigane:");
+
+                long price = InputUtil.readLong(scanner, "Izberete cena:");
+
+                String typeInput = InputUtil.readString(scanner,
+                        "Izberete tip na transport (CAR/BUS/TRUCK):");
+                TransportType type = TransportType.valueOf(typeInput);
+
+                String sizeString = "";
+                switch (type) {
+                    case CAR, BUS:
+                        sizeString = "Izberete kolko na broi hora shte budat prevozvani: ";
+                        break;
+                    case TRUCK:
+                        sizeString = "Izberete tejesta na tovara: ";
+                        break;
+                }
+
+                List<Vehicle> availableVehicles = VehicleDao.getVehiclesForCompany(currentCompany);
+                Vehicle chosenVehicle = VehicleService.selectVehicle(scanner, availableVehicles);
+
+                int size = InputUtil.readInt(scanner, sizeString);
+
+                List<Employee> employeeList = EmployeeDao.getEmployeesForCompany(currentCompany);
+                Employee employee = EmployeeService.selectEmployee(scanner, employeeList);
+
+                boolean status = InputUtil.readBoolean(scanner, "Dostavkata zaplatena li e? (yes/no)");
+
+                List<Client> allClients = ClientDao.getClientsForCompany(currentCompany);
+                Optional<Client> maybeClient = ClientService.selectClient(scanner, allClients);
+                if (!maybeClient.isPresent()) {
+                    break;
+                }
+                Client selectedClient = maybeClient.get();
+
+                try {
+
+                    Transport transport = TransportService.createTransport(departure, arrival,
+                            departureLocation,
+                            arrivalLocation, price, type, size,
+                            currentCompany,
+                            employee, chosenVehicle, status, selectedClient);
+                    TransportDao.createTransport(transport);
+                    System.out.println("Uspeshno suzdaden!");
+                } catch (InvalidVehicleTypeException | InvalidEmployeeLicenseException
+                        | InsufficientVehicleCapacityException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+            // status change
+            case 2:
+                System.out.println("Izberete transporta, chiito status da bude flipnat:");
+                Transport selectedTransport = TransportService.selectTransport(scanner, transportList);
+                selectedTransport.flipStatus();
+
+                TransportDao.updateTransport(selectedTransport);
+                break;
+            case 0:
+                break;
+            default:
+                System.out.println("Ne sushtestvuva.");
+                break;
+        }
+    }
+
+    private static void employeesMenu(Scanner scanner, Company currentCompany) {
+        Menu companyEmployeeMenu = new Menu(currentCompany.getName() + " slujiteli");
+        companyEmployeeMenu.addOption(1, "Dobavqne");
+        companyEmployeeMenu.addOption(2, "Redaktirane");
+        companyEmployeeMenu.addOption(3, "Iztrivane");
+        companyEmployeeMenu.addOption(0, "back");
+        List<Employee> employeeList = EmployeeDao.getEmployeesForCompany(currentCompany);
+
+        int employeeChoice = companyEmployeeMenu.listen(scanner, "");
+        switch (employeeChoice) {
+            // add employee
+            case 1: {
+
+                String name = InputUtil.readString(scanner, "Izberete ime:");
+
+                String licenseInput = InputUtil.readString(scanner,
+                        "Izberete knijka (A/B/C):");
+                License license = License.valueOf(licenseInput);
+
+                long salary = InputUtil.readLong(scanner, "Izberete zaplata:");
+
+                Employee employee = new Employee(name, license, currentCompany, salary);
+                EmployeeDao.createEmployee(employee);
+
+                break;
+            }
+
+            // edit employee
+            case 2: {
+                Employee selectedEmployee = EmployeeService.selectEmployee(scanner, employeeList);
+                if (selectedEmployee == null) {
+                    break;
+                }
+                String name = InputUtil.readString(scanner, "Izberete ime (string/no):");
+                if (!name.equals("no")) {
+                    selectedEmployee.setName(name);
+                }
+
+                String licenseInput = InputUtil.readString(scanner,
+                        "Izberete knijka (A/B/C/no):");
+                if (!licenseInput.equals("no")) {
+                    License license = License.valueOf(licenseInput);
+                    selectedEmployee.setLicense(license);
+                }
+
+                long salary = InputUtil.readLong(scanner, "Izberete zaplata (long/-1):");
+                if (salary != -1) {
+                    selectedEmployee.setSalary(salary);
+                }
+
+                EmployeeDao.updateEmployee(selectedEmployee);
+
+                break;
+            }
+
+            // delete employee
+            case 3:
+                Employee employeeForDeletion = EmployeeService.selectEmployee(scanner, employeeList);
+                if (employeeForDeletion == null) {
+                    break;
+                }
+                EmployeeDao.deleteEmployee(employeeForDeletion);
+                break;
+
+            case 0:
+                break;
+            default:
+                System.out.println("Ne sushtestvuva.");
+                break;
+        }
+    }
+
+    private static void vehiclesMenu(Scanner scanner, Company currentCompany) {
+        Menu companyVehiclesMenu = new Menu(currentCompany.getName() + " prevozni sredstva");
+        companyVehiclesMenu.addOption(1, "Dobavqne");
+        companyVehiclesMenu.addOption(2, "Redaktirane");
+        companyVehiclesMenu.addOption(3, "Iztrivane");
+        companyVehiclesMenu.addOption(0, "back");
+        List<Vehicle> vehicleList = VehicleDao.getVehiclesForCompany(currentCompany);
+
+        int vehicleChoice = companyVehiclesMenu.listen(scanner, "");
+        switch (vehicleChoice) {
+            // add vehicle
+            case 1: {
+
+                String transportTypeInput = InputUtil.readString(scanner,
+                        "Izberete tip na transport-a (CAR/BUS/TRUCK):");
+                TransportType transportType = TransportType.valueOf(transportTypeInput);
+
+                int capacity = InputUtil.readInt(scanner, "Vuvedete max capacity-to:");
+
+                Vehicle vehicle = new Vehicle(currentCompany, transportType, capacity);
+                VehicleDao.createVehicle(vehicle);
+                break;
+            }
+
+            // edit vehicle
+            case 2: {
+                Vehicle selectedVehicle = VehicleService.selectVehicle(scanner, vehicleList);
+                if (selectedVehicle == null) {
+                    break;
+                }
+
+                String typeInput = InputUtil.readString(scanner,
+                        "Izberete transport type (CAR/BUS/TRUCK/no):");
+                if (!typeInput.equals("no")) {
+                    TransportType transportType = TransportType.valueOf(typeInput);
+                    selectedVehicle.setType(transportType);
+                }
+
+                int capacity = InputUtil.readInt(scanner, "Izberete capacity (int/-1):");
+                if (capacity != -1) {
+                    selectedVehicle.setCapacity(capacity);
+                }
+
+                VehicleDao.updateVehicle(selectedVehicle);
+
+                break;
+            }
+
+            // delete vehicle
+            case 3:
+                Vehicle vehicleForDeletion = VehicleService.selectVehicle(scanner, vehicleList);
+                if (vehicleForDeletion == null) {
+                    break;
+                }
+                VehicleDao.deleteVehicle(vehicleForDeletion);
+                break;
+
+            case 0:
+                break;
+            default:
+                System.out.println("Ne sushtestvuva.");
+                break;
+        }
+    }
+
+    private static void clientsMenu(Scanner scanner, Company currentCompany) {
+        Menu companyClientsMenu = new Menu(currentCompany.getName() + " klienti");
+        companyClientsMenu.addOption(1, "Dobavqne");
+        companyClientsMenu.addOption(2, "Redaktirane");
+        companyClientsMenu.addOption(3, "Iztrivane");
+        companyClientsMenu.addOption(0, "back");
+        List<Client> clientList = ClientDao.getClientsForCompany(currentCompany);
+
+        int clientsChoice = companyClientsMenu.listen(scanner, "");
+        switch (clientsChoice) {
+            // add client
+            case 1:
+                String name = InputUtil.readString(scanner, "Imeto na klientut: ");
+                Client client = new Client(name, currentCompany);
+                ClientDao.createClient(client);
+                break;
+
+            // edit client
+            case 2:
+                Optional<Client> maybeClient = ClientService.selectClient(scanner, clientList);
+                if (!maybeClient.isPresent()) {
+                    break;
+                }
+                Client selectedClient = maybeClient.get();
+                String newName = InputUtil.readString(scanner, "Napishete novoto ime na klientut: ");
+                selectedClient.setName(newName);
+                ClientDao.updateClient(selectedClient);
+                break;
+
+            // delete client
+            case 3:
+                Optional<Client> maybeClientForDeletion = ClientService.selectClient(scanner,
+                        clientList);
+                if (!maybeClientForDeletion.isPresent()) {
+                    break;
+                }
+                Client clientForDeletion = maybeClientForDeletion.get();
+                ClientDao.deleteClient(clientForDeletion);
+                break;
+
+            case 0:
+                break;
+            default:
+                System.out.println("Ne sushtestvuva.");
+                break;
+        }
+    }
+
+    private static void settingsMenu(Optional<Company> maybeCompany, Scanner scanner,
+            Company currentCompany) {
+        Menu companySettingsMenu = new Menu(currentCompany.getName() + " nastroiki");
+        companySettingsMenu.addOption(1, "Smqna na ime");
+        companySettingsMenu.addOption(2, "Iztrivane");
+        companySettingsMenu.addOption(0, "back");
+
+        int menuChoice = companySettingsMenu.listen(scanner, "");
+        switch (menuChoice) {
+            case 1:
+                String new_name = InputUtil.readString(scanner, "Novo ime: ");
+                currentCompany.setName(new_name);
+                CompanyDao.updateCompany(currentCompany);
+                break;
+            case 2:
+                CompanyDao.deleteCompany(currentCompany);
+                maybeCompany = Optional.empty();
+                break;
+            case 0:
+                break;
+            default:
+                System.out.println("Ne sushtestvuva.");
+                break;
+        }
     }
 
 }
