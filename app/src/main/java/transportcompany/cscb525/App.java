@@ -14,6 +14,7 @@ import transportcompany.cscb525.configuration.SessionFactoryUtil;
 import transportcompany.cscb525.util.InputUtil;
 import transportcompany.cscb525.util.Menu;
 import transportcompany.cscb525.dao.*;
+import transportcompany.cscb525.dto.CompanyDto;
 import transportcompany.cscb525.entity.*;
 import transportcompany.cscb525.exceptions.CompanyNotFoundException;
 import transportcompany.cscb525.exceptions.InsufficientVehicleCapacityException;
@@ -77,7 +78,7 @@ public class App {
                 companyMenu.addOption(3, "Prevozni sredstva");
                 companyMenu.addOption(4, "Slujiteli");
                 companyMenu.addOption(5, "Prevozi");
-                companyMenu.addOption(9, "Statistiki");
+                companyMenu.addOption(9, "Danni");
                 companyMenu.addOption(0, "exit");
 
                 int choice = companyMenu.listen(scanner, "");
@@ -110,6 +111,12 @@ public class App {
                         break;
                     }
 
+                    // data
+                    case 9: {
+                        dataMenu(scanner, currentCompany);
+                        break;
+                    }
+
                     case 0:
                         scanner.close();
                         return;
@@ -121,6 +128,86 @@ public class App {
             }
         }
 
+    }
+
+    private static void dataMenu(Scanner scanner, Company currentCompany) {
+        Menu menu = new Menu("Danni");
+        menu.addOption(1, "Kompanii");
+        menu.addOption(2, "Slujiteli");
+        menu.addOption(3, "Prevozi");
+        menu.addOption(0, "back");
+
+        int choice = menu.listen(scanner, "");
+        switch (choice) {
+            // companies
+            case 1:
+                String nameFilter = null;
+                Long profitFilter = null;
+                boolean isSortAsc = false;
+
+                boolean shouldExit = false;
+                while (true) {
+
+                    Menu filtersMenu = new Menu("Danni filtri");
+                    filtersMenu.addOption(1, "Ime - " + nameFilter);
+                    filtersMenu.addOption(2, "Profit - " + profitFilter);
+                    filtersMenu.addOption(3, "Sort - " + (isSortAsc ? "ascending" : "descending"));
+                    filtersMenu.addOption(4, "Search");
+                    filtersMenu.addOption(0, "back");
+
+                    int filterChoice = filtersMenu.listen(scanner, "");
+                    switch (filterChoice) {
+                        // name filter
+                        case 1:
+                            nameFilter = InputUtil.readString(scanner, "Vuvedete ime za filter:");
+                            break;
+                        // profit filter
+                        case 2:
+                            profitFilter = InputUtil.readLong(scanner, "Vuvedete minimalen profit za filter:");
+                            break;
+                        // flip sort
+                        case 3:
+                            isSortAsc = !isSortAsc;
+                            break;
+                        // run filters
+                        case 4:
+                            List<CompanyDto> allCompanies = CompanyDao.filterCompanies(nameFilter, profitFilter,
+                                    isSortAsc);
+                            System.out.println("\nFiltrirani kompanii:");
+                            CompanyDto.printList(allCompanies);
+                            shouldExit = true;
+                            break;
+
+                        case 0:
+                            shouldExit = true;
+                            break;
+                        default:
+                            System.out.println("Ne sushtestvuva.");
+                            break;
+                    }
+                    // exit while loop if the filter is executed or if user wants to go back
+                    if (shouldExit) {
+                        break;
+                    }
+                }
+                break;
+
+            // staff
+            case 2:
+
+                break;
+            // transport
+            case 3:
+
+                break;
+
+            case 0:
+                scanner.close();
+                return;
+            default:
+                System.out.println("Ne sushtestvuva.");
+                break;
+        }
     }
 
     private static void transportMenu(Scanner scanner, Company currentCompany) {
