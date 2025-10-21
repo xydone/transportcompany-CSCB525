@@ -141,64 +141,16 @@ public class App {
         switch (choice) {
             // companies
             case 1:
-                String nameFilter = null;
-                Long profitFilter = null;
-                boolean isSortAsc = false;
-
-                boolean shouldExit = false;
-                while (true) {
-
-                    Menu filtersMenu = new Menu("Danni filtri");
-                    filtersMenu.addOption(1, "Ime - " + nameFilter);
-                    filtersMenu.addOption(2, "Profit - " + profitFilter);
-                    filtersMenu.addOption(3, "Sort - " + (isSortAsc ? "ascending" : "descending"));
-                    filtersMenu.addOption(4, "Search");
-                    filtersMenu.addOption(0, "back");
-
-                    int filterChoice = filtersMenu.listen(scanner, "");
-                    switch (filterChoice) {
-                        // name filter
-                        case 1:
-                            nameFilter = InputUtil.readString(scanner, "Vuvedete ime za filter:");
-                            break;
-                        // profit filter
-                        case 2:
-                            profitFilter = InputUtil.readLong(scanner, "Vuvedete minimalen profit za filter:");
-                            break;
-                        // flip sort
-                        case 3:
-                            isSortAsc = !isSortAsc;
-                            break;
-                        // run filters
-                        case 4:
-                            List<CompanyDto> allCompanies = CompanyDao.filterCompanies(nameFilter, profitFilter,
-                                    isSortAsc);
-                            System.out.println("\nFiltrirani kompanii:");
-                            CompanyDto.printList(allCompanies);
-                            shouldExit = true;
-                            break;
-
-                        case 0:
-                            shouldExit = true;
-                            break;
-                        default:
-                            System.out.println("Ne sushtestvuva.");
-                            break;
-                    }
-                    // exit while loop if the filter is executed or if user wants to go back
-                    if (shouldExit) {
-                        break;
-                    }
-                }
+                filterSortCompanies(scanner);
                 break;
 
             // staff
             case 2:
-
+                filterSortStaff(scanner);
                 break;
             // transport
             case 3:
-
+                filterSortTransport(scanner);
                 break;
 
             case 0:
@@ -207,6 +159,117 @@ public class App {
             default:
                 System.out.println("Ne sushtestvuva.");
                 break;
+        }
+    }
+
+    private static void filterSortStaff(Scanner scanner) {
+        License licenseFilter = null;
+        Long salaryFilter = null;
+        boolean isSortAsc = false;
+
+        boolean shouldExit = false;
+        while (true) {
+            Menu menu = new Menu("Danni - slujiteli");
+            menu.addOption(1, "Knijka - " + licenseFilter);
+            menu.addOption(2, "Zaplata - " + salaryFilter);
+            menu.addOption(3, "Zaplata sort - " + (isSortAsc ? "ascending" : "descending"));
+            menu.addOption(4, "Search");
+            menu.addOption(0, "back");
+
+            int choice = menu.listen(scanner, "");
+            switch (choice) {
+                // license filter
+                case 1:
+                    String licenseInput = InputUtil.readString(scanner,
+                            "Izberete knijka za filter (A/B/C):");
+                    try {
+                        licenseFilter = License.valueOf(licenseInput);
+                    } catch (Exception e) {
+                        System.out.println("Nevalidna knijka!");
+                    }
+                    break;
+                // salary filter
+                case 2:
+                    salaryFilter = InputUtil.readLong(scanner, "Vuvedete minimalen zaplata za filter:");
+                    break;
+                // flip sort
+                case 3:
+                    isSortAsc = !isSortAsc;
+                    break;
+                // search
+                case 4:
+                    List<Employee> filteredEmployees = EmployeeDao.filterEmployees(salaryFilter, licenseFilter,
+                            isSortAsc);
+                    System.out.println("\nFiltrirani slujiteli:");
+                    EmployeeService.printEmployees(scanner, filteredEmployees);
+                    shouldExit = true;
+                    break;
+                case 0:
+                    shouldExit = true;
+                    break;
+                default:
+                    System.out.println("Ne sushtestvuva.");
+                    break;
+            }
+            // exit while loop if the filter is executed or if user wants to go back
+            if (shouldExit) {
+                break;
+            }
+        }
+    }
+
+    private static void filterSortTransport(Scanner scanner) {
+    }
+
+    private static void filterSortCompanies(Scanner scanner) {
+        String nameFilter = null;
+        Long profitFilter = null;
+        boolean isSortAsc = false;
+
+        boolean shouldExit = false;
+        while (true) {
+
+            Menu menu = new Menu("Danni - kompanii");
+            menu.addOption(1, "Ime - " + nameFilter);
+            menu.addOption(2, "Profit - " + profitFilter);
+            menu.addOption(3, "Profit sort - " + (isSortAsc ? "ascending" : "descending"));
+            menu.addOption(4, "Search");
+            menu.addOption(0, "back");
+
+            int choice = menu.listen(scanner, "");
+            switch (choice) {
+                // name filter
+                case 1:
+                    nameFilter = InputUtil.readString(scanner, "Vuvedete ime za filter:");
+                    break;
+                // profit filter
+                case 2:
+                    profitFilter = InputUtil.readLong(scanner, "Vuvedete minimalen profit za filter:");
+                    break;
+                // flip sort
+                case 3:
+                    isSortAsc = !isSortAsc;
+                    break;
+                // run filters
+                case 4:
+                    List<CompanyDto> allCompanies = CompanyDao.filterCompanies(nameFilter, profitFilter,
+                            isSortAsc);
+                    System.out.println("\nFiltrirani kompanii:");
+                    CompanyDto.printList(allCompanies);
+                    shouldExit = true;
+                    break;
+
+                case 0:
+                    shouldExit = true;
+                    break;
+                default:
+                    System.out.println("Ne sushtestvuva.");
+                    break;
+            }
+            // exit while loop if the filter is executed or if user wants to go back
+            if (shouldExit) {
+                break;
+            }
         }
     }
 

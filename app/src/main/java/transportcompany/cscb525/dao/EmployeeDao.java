@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import jakarta.validation.Valid;
 import transportcompany.cscb525.configuration.SessionFactoryUtil;
 import transportcompany.cscb525.entity.Company;
 import transportcompany.cscb525.entity.Employee;
 import transportcompany.cscb525.exceptions.EmployeeNotFoundException;
+import transportcompany.cscb525.types.License;
 
 public class EmployeeDao {
   public static void createEmployee(@Valid Employee employee) {
@@ -75,6 +77,43 @@ public class EmployeeDao {
       transaction.commit();
     }
     return employees;
+  }
+
+  /**
+   * all params are nullable
+   */
+  public static List<Employee> filterEmployees(Long minSalary, License license, boolean isSortAsc) {
+    try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+      Transaction transaction = session.beginTransaction();
+
+      // WHERE 1=1 is needed as further queries have to assume they can either be the
+      // first or not the first filter applied
+      StringBuilder hql = new StringBuilder("FROM Employee e WHERE 1 = 1");
+
+      if (minSalary != null) {
+        hql.append(" AND e.salary >= :minSalary");
+      }
+
+      if (license != null) {
+        hql.append(" AND e.license = :license");
+      }
+
+      hql.append(" ORDER BY e.salary ");
+      hql.append(isSortAsc ? "ASC" : "DESC");
+
+      Query<Employee> query = session.createQuery(hql.toString(), Employee.class);
+
+      if (minSalary != null)
+        query.setParameter("minSalary", minSalary);
+
+      if (license != null)
+        query.setParameter("license", license);
+
+      List<Employee> results = query.getResultList();
+      transaction.commit();
+
+      return results;
+    }
   }
 
 }
