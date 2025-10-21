@@ -6,10 +6,14 @@ import transportcompany.cscb525.types.TransportType;
 
 @Entity
 @Table(name = "employees")
-public class Employee extends BaseEntity {
+public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    public long getId() {
+        return id;
+    }
 
     @Column
     private String name;

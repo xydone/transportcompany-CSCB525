@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "clients")
-public class Client extends BaseEntity {
+public class Client {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
@@ -19,6 +19,10 @@ public class Client extends BaseEntity {
   @OnDelete(action = OnDeleteAction.CASCADE)
   @JoinColumn(name = "company_id")
   private Company company;
+
+  public Company getCompany() {
+    return company;
+  }
 
   // hibernate no arg
   protected Client() {

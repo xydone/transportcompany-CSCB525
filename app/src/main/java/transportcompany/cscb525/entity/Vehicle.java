@@ -8,15 +8,23 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "vehicles")
-public class Vehicle extends BaseEntity {
+public class Vehicle {
   @ManyToOne()
   @OnDelete(action = OnDeleteAction.CASCADE)
   @JoinColumn(name = "company_id")
   private Company company;
 
+  public Company getCompany() {
+    return company;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+
+  public long getId() {
+    return id;
+  }
 
   @Column(nullable = false)
   private TransportType type;

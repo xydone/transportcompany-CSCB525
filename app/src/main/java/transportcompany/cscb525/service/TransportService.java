@@ -1,5 +1,7 @@
 package transportcompany.cscb525.service;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -63,6 +65,27 @@ public class TransportService {
     for (int i = 1; i <= transportList.size(); i++) {
       Transport t = transportList.get(i - 1);
       System.out.println("#" + i + ": " + t.getStartPoint() + " -> " + t.getEndPoint() + ", platen: " + t.getStatus());
+    }
+  }
+
+  public static void saveToFile(List<Transport> list, String path) {
+    try (FileWriter writer = new FileWriter(path)) {
+      for (Transport transport : list) {
+        String line = String.format("Transport #%d; %s (%s) -> %s (%s); %d (%s); Company \"%s\"",
+            transport.getId(),
+            transport.getStartPoint(),
+            transport.getDeparture(),
+            transport.getEndPoint(),
+            transport.getArrival(),
+            transport.getPrice(),
+            transport.getStatus() ? "paid" : "not paid",
+            transport.getCompany().getName());
+        writer.write(line);
+
+        writer.write("\n");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 }

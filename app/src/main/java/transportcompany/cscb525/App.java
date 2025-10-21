@@ -78,7 +78,8 @@ public class App {
                 companyMenu.addOption(3, "Prevozni sredstva");
                 companyMenu.addOption(4, "Slujiteli");
                 companyMenu.addOption(5, "Prevozi");
-                companyMenu.addOption(9, "Danni");
+                companyMenu.addOption(6, "File");
+                companyMenu.addOption(7, "Danni");
                 companyMenu.addOption(0, "exit");
 
                 int choice = companyMenu.listen(scanner, "");
@@ -111,9 +112,15 @@ public class App {
                         break;
                     }
 
+                    // file writer
+                    case 6: {
+                        fileMenu(scanner);
+                        break;
+                    }
+
                     // data
-                    case 9: {
-                        dataMenu(scanner, currentCompany);
+                    case 7: {
+                        dataMenu(scanner);
                         break;
                     }
 
@@ -130,7 +137,49 @@ public class App {
 
     }
 
-    private static void dataMenu(Scanner scanner, Company currentCompany) {
+    private static void fileMenu(Scanner scanner) {
+        Menu menu = new Menu("File");
+        menu.addOption(1, "Klienti");
+        menu.addOption(2, "Prevozni sredstva");
+        menu.addOption(3, "Slujiteli");
+        menu.addOption(4, "Prevozi");
+        menu.addOption(0, "back");
+
+        int choice = menu.listen(scanner, "");
+        switch (choice) {
+            // clients
+            case 1:
+                List<Client> clients = ClientDao.getClients();
+                ClientService.saveToFile(clients, "../data/clients.txt");
+                break;
+
+            // vehicles
+            case 2:
+                List<Vehicle> vehicles = VehicleDao.getVehicles();
+                VehicleService.saveToFile(vehicles, "../data/vehicles.txt");
+                break;
+
+            // employees
+            case 3:
+                List<Employee> employees = EmployeeDao.getEmployees();
+                EmployeeService.saveToFile(employees, "../data/employees.txt");
+                break;
+
+            // transports
+            case 4:
+                List<Transport> transports = TransportDao.getTransports();
+                TransportService.saveToFile(transports, "../data/transports.txt");
+                break;
+
+            case 0:
+                return;
+            default:
+                System.out.println("Ne sushtestvuva.");
+                break;
+        }
+    }
+
+    private static void dataMenu(Scanner scanner) {
         Menu menu = new Menu("Danni");
         menu.addOption(1, "Kompanii");
         menu.addOption(2, "Slujiteli");
@@ -154,7 +203,6 @@ public class App {
                 break;
 
             case 0:
-                scanner.close();
                 return;
             default:
                 System.out.println("Ne sushtestvuva.");

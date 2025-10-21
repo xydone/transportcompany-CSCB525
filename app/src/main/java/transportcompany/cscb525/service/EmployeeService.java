@@ -1,5 +1,7 @@
 package transportcompany.cscb525.service;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,6 +31,24 @@ public class EmployeeService {
     for (int i = 1; i <= employeeList.size(); i++) {
       Employee e = employeeList.get(i - 1);
       System.out.println("#" + i + ": " + e.getName() + " ; License " + e.getLicense() + " ; " + e.getSalary() + "$");
+    }
+  }
+
+  public static void saveToFile(List<Employee> list, String path) {
+    try (FileWriter writer = new FileWriter(path)) {
+      for (Employee employee : list) {
+        String line = String.format("Employee #%d; %s; License %s; %d$; Company \"%s\"",
+            employee.getId(),
+            employee.getName(),
+            employee.getLicense().name(),
+            employee.getSalary(),
+            employee.getCompany().getName());
+        writer.write(line);
+
+        writer.write("\n");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 }

@@ -1,10 +1,13 @@
 package transportcompany.cscb525.service;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
 import transportcompany.cscb525.entity.Client;
+import transportcompany.cscb525.entity.Employee;
 import transportcompany.cscb525.util.InputUtil;
 
 public class ClientService {
@@ -27,5 +30,21 @@ public class ClientService {
     }
 
     return Optional.of(clientList.get(clientNum - 1));
+  }
+
+  public static void saveToFile(List<Client> list, String path) {
+    try (FileWriter writer = new FileWriter(path)) {
+      for (Client client : list) {
+        String line = String.format("Client #%d; %s; Company \"%s\"",
+            client.getId(),
+            client.getName(),
+            client.getCompany().getName());
+        writer.write(line);
+
+        writer.write("\n");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
