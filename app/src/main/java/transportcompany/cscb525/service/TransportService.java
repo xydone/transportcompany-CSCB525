@@ -48,10 +48,7 @@ public class TransportService {
     }
 
     System.out.println("List na prevozi:");
-    for (int i = 1; i <= transportList.size(); i++) {
-      Transport t = transportList.get(i - 1);
-      System.out.println("#" + i + ": " + t.getStartPoint() + " -> " + t.getEndPoint() + ", platen: " + t.getStatus());
-    }
+    printTransports(transportList);
     System.out.println("Natisnete 0 za da izlezete");
 
     int transportNum = InputUtil.readInt(scanner, "Napishete nomerut na slujitelqt: ");
@@ -60,5 +57,12 @@ public class TransportService {
     }
 
     return transportList.get(transportNum - 1);
+  }
+
+  public static void printTransports(List<Transport> transportList) {
+    for (int i = 1; i <= transportList.size(); i++) {
+      Transport t = transportList.get(i - 1);
+      System.out.println("#" + i + ": " + t.getStartPoint() + " -> " + t.getEndPoint() + ", platen: " + t.getStatus());
+    }
   }
 }

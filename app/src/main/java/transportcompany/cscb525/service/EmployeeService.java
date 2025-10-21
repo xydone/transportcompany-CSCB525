@@ -14,7 +14,7 @@ public class EmployeeService {
     }
 
     System.out.println("List na slujiteli:");
-    printEmployees(scanner, employeeList);
+    printEmployees(employeeList);
     System.out.println("Natisnete 0 za da izlezete");
 
     int employeeNum = InputUtil.readInt(scanner, "Napishete nomerut na slujitelqt: ");
@@ -25,7 +25,7 @@ public class EmployeeService {
     return employeeList.get(employeeNum - 1);
   }
 
-  public static void printEmployees(Scanner scanner, List<Employee> employeeList) {
+  public static void printEmployees(List<Employee> employeeList) {
     for (int i = 1; i <= employeeList.size(); i++) {
       Employee e = employeeList.get(i - 1);
       System.out.println("#" + i + ": " + e.getName() + " ; License " + e.getLicense() + " ; " + e.getSalary() + "$");

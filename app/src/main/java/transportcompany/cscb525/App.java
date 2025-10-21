@@ -201,7 +201,7 @@ public class App {
                     List<Employee> filteredEmployees = EmployeeDao.filterEmployees(salaryFilter, licenseFilter,
                             isSortAsc);
                     System.out.println("\nFiltrirani slujiteli:");
-                    EmployeeService.printEmployees(scanner, filteredEmployees);
+                    EmployeeService.printEmployees(filteredEmployees);
                     shouldExit = true;
                     break;
                 case 0:
@@ -219,6 +219,46 @@ public class App {
     }
 
     private static void filterSortTransport(Scanner scanner) {
+        String startFilter = null;
+        String endFilter = null;
+
+        boolean shouldExit = false;
+        while (true) {
+            Menu menu = new Menu("Danni - prevozi");
+            menu.addOption(1, "Nachalo - " + startFilter);
+            menu.addOption(2, "Destinaciq - " + endFilter);
+            menu.addOption(3, "Search");
+            menu.addOption(0, "back");
+
+            int choice = menu.listen(scanner, "");
+            switch (choice) {
+                // start filter
+                case 1:
+                    startFilter = InputUtil.readString(scanner, "Izberete nachalna tochka za filter:");
+                    break;
+                // end filter
+                case 2:
+                    endFilter = InputUtil.readString(scanner, "Izberete kraina tochka za filter:");
+                    break;
+                // search
+                case 3:
+                    List<Transport> filteredEmployees = TransportDao.filterTransports(startFilter, endFilter);
+                    System.out.println("\nFiltrirani transporti:");
+                    TransportService.printTransports(filteredEmployees);
+                    shouldExit = true;
+                    break;
+                case 0:
+                    shouldExit = true;
+                    break;
+                default:
+                    System.out.println("Ne sushtestvuva.");
+                    break;
+            }
+            // exit while loop if the filter is executed or if user wants to go back
+            if (shouldExit) {
+                break;
+            }
+        }
     }
 
     private static void filterSortCompanies(Scanner scanner) {

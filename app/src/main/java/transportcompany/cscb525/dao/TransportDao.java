@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import jakarta.validation.Valid;
 import transportcompany.cscb525.configuration.SessionFactoryUtil;
@@ -75,6 +76,43 @@ public class TransportDao {
       transaction.commit();
     }
     return transports;
+  }
+
+  /**
+   * all params are nullable
+   */
+  public static List<Transport> filterTransports(String startPoint, String endPoint) {
+    try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+      Transaction transaction = session.beginTransaction();
+
+      // WHERE 1=1 is needed as further queries have to assume they can either be the
+      // first or not the first filter applied
+      StringBuilder hql = new StringBuilder("""
+              FROM Transport t
+              WHERE 1 = 1
+          """);
+
+      if (startPoint != null && !startPoint.isBlank()) {
+        hql.append(" AND LOWER(t.startPoint) LIKE LOWER(:startPointFilter)");
+      }
+      if (endPoint != null && !endPoint.isBlank()) {
+        hql.append(" AND LOWER(t.endPoint) LIKE LOWER(:endPointFilter)");
+      }
+
+      Query<Transport> query = session.createQuery(hql.toString(), Transport.class);
+
+      if (startPoint != null && !startPoint.isBlank()) {
+        query.setParameter("startPointFilter", "%" + startPoint + "%");
+      }
+      if (endPoint != null && !endPoint.isBlank()) {
+        query.setParameter("endPointFilter", "%" + endPoint + "%");
+      }
+
+      List<Transport> results = query.getResultList();
+      transaction.commit();
+
+      return results;
+    }
   }
 
 }
