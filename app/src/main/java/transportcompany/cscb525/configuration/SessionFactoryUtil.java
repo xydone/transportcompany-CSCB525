@@ -27,4 +27,8 @@ public class SessionFactoryUtil {
         }
         return sessionFactory;
     }
+
+    public static void setSessionFactory(SessionFactory factory) {
+        sessionFactory = factory;
+    }
 }
