@@ -76,7 +76,8 @@ public class CompanyDao {
               SELECT new transportcompany.cscb525.dto.CompanyDto(
                   c,
                   COALESCE((SELECT SUM(t.price) FROM Transport t WHERE t.company = c), 0)
-                  - COALESCE((SELECT SUM(e.salary) FROM Employee e WHERE e.company = c), 0)
+                  - COALESCE((SELECT SUM(e.salary) FROM Employee e WHERE e.company = c), 0),
+                  (SELECT COUNT(t) FROM Transport t WHERE t.company = c)
               )
               FROM Company c
               WHERE 1 = 1

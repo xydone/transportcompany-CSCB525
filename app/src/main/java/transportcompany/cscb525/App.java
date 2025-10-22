@@ -249,7 +249,7 @@ public class App {
                     List<Employee> filteredEmployees = EmployeeDao.filterEmployees(salaryFilter, licenseFilter,
                             isSortAsc);
                     System.out.println("\nFiltrirani slujiteli:");
-                    EmployeeService.printEmployees(filteredEmployees);
+                    EmployeeService.printEmployees(filteredEmployees, true);
                     shouldExit = true;
                     break;
                 case 0:
@@ -292,7 +292,7 @@ public class App {
                 case 3:
                     List<Transport> filteredEmployees = TransportDao.filterTransports(startFilter, endFilter);
                     System.out.println("\nFiltrirani transporti:");
-                    TransportService.printTransports(filteredEmployees);
+                    TransportService.printTransports(filteredEmployees, true);
                     shouldExit = true;
                     break;
                 case 0:
@@ -343,7 +343,7 @@ public class App {
                     List<CompanyDto> allCompanies = CompanyDao.filterCompanies(nameFilter, profitFilter,
                             isSortAsc);
                     System.out.println("\nFiltrirani kompanii:");
-                    CompanyDto.printList(allCompanies);
+                    CompanyDto.printList(allCompanies, true);
                     shouldExit = true;
                     break;
 

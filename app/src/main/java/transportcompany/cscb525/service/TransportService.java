@@ -50,7 +50,7 @@ public class TransportService {
     }
 
     System.out.println("List na prevozi:");
-    printTransports(transportList);
+    printTransports(transportList, false);
     System.out.println("Natisnete 0 za da izlezete");
 
     int transportNum = InputUtil.readInt(scanner, "Napishete nomerut na slujitelqt: ");
@@ -61,10 +61,26 @@ public class TransportService {
     return transportList.get(transportNum - 1);
   }
 
-  public static void printTransports(List<Transport> transportList) {
+  /**
+   * printTotals determines if the total sum of values. Made toggleable as it
+   * might not be desireable behaviour
+   * everywhere
+   */
+  public static void printTransports(List<Transport> transportList, boolean printTotals) {
+    long totalTransports = transportList.size();
+    long totalPaid = 0;
     for (int i = 1; i <= transportList.size(); i++) {
       Transport t = transportList.get(i - 1);
-      System.out.println("#" + i + ": " + t.getStartPoint() + " -> " + t.getEndPoint() + ", platen: " + t.getStatus());
+      boolean status = t.getStatus();
+      if (status) {
+        totalPaid += 1;
+      }
+      System.out.println(
+          "#" + i + ": " + t.getStartPoint() + " -> " + t.getEndPoint() + ", " + (status ? "platen" : "neplaten"));
+    }
+    if (printTotals) {
+      System.out.println("TOTAL: " + totalTransports + " prevoza, ot koito " + totalPaid
+          + (totalPaid == 1 ? " e platen" : " sa plateni"));
     }
   }
 
