@@ -37,6 +37,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
     testImplementation("org.mockito:mockito-junit-jupiter:5.18.0")
+
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+    implementation("org.apache.logging.log4j:log4j-core:2.25.2")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
